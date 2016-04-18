@@ -1,0 +1,19 @@
+{
+  "name": "vote-system",
+  "description": "ui denpendency for vote system",
+  "authors": [
+    "Da Gong <darringong@hotmail.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "nodejs",
+    "angularjs"
+  ],
+  "homepage": "http://www.morningarrive.com",
+  "dependencies": {
+    "angular": "~1.0.8",
+    "angular-resource": "~1.0.8",
+    "bootstrap": "~3.0.1",
+    "jquery": "~1.10.2"
+  }
+}
