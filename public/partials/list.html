@@ -18,7 +18,7 @@
 	</ul>
 	<ul ng-switch-default>
 		<li ng-repeat="poll in polls | filter:query">
-			<span>{{poll.question}}</span> <a href="#/poll/{{poll._id}}">投票</a>           <a href="#/pollStatus/{{poll._id}}" pull-right>查看投票状态</a>
+			<span>{{poll.question}}</span> <a href="#/poll/{{poll._id}}">投票</a>           <a href="#/pollStatus/{{poll._id}}" ng-click="$event.stopPropagation();">查看投票状态</a>
 		</li>
 	</ul>
 </div>
