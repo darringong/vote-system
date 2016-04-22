@@ -1,54 +1,53 @@
-<div class="page-header">
-	<h1>View Poll</h1>
-</div>
-<div class="well well-lg">
-	<strong>Question</strong><br>{{poll.question}}
-</div>
+<div ng-init="initChoice()">
+	<div class="page-header">
+		<h1>投票</h1>
+	</div>
+	<div class="well well-lg">
+		<strong>问题</strong><br>{{poll.question}}
+	</div>
 
-<div ng-hide="poll.userVoted">
-	<p class="lead">Please select one of the following options:</p>
+	<div ng-show="poll.userVoted">
+		<table class="result-table">
+			<tr ng-repeat="choice in poll.choices">
+				<td>{{choice.text}}</td>
+				<td>
+					<table style="background-color: lightblue; width: {{choice.votes.length/poll.totalVotes*100}}%; text-align: right">
+						<tr><td>{{choice.votes.length}}</td></tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+				
+		<p>
+			<em>
+				目前投票总人数 {{poll.totalVotes}}。
+				<span ng-show="poll.userChoice">您选择了： <strong>{{poll.userChoice.text}}</strong>.</span>
+			</em>
+		</p>
+		
+	</div>
 
-	<form role="form" ng-submit="vote()">
-		<div ng-repeat="choice in poll.choices" class="radio">
-			<label>
-				<input type="radio" name="choice" ng-model="poll.userVote" value="{{choice._id}}">
-				{{choice.text}}
-			</label>
-		</div>
-		<p><hr></p>
-		<div class="row">
-			<div class="col-xs-6">
-				<a href="#/polls" class="btn btn-default" role="button"><span class="glyphicon glyphicon-arrow-left"></span> Back to Poll List</a>
+	<div>
+		<p class="lead">请选择投票选项：</p>
+		<form role="form" ng-submit="vote()">
+			<table>
+			    <tr ng-repeat="choice in poll.choices">
+			      <td>
+			        <input type="checkbox" ng-model="choice.checked" ng-click="updateSelection($index, poll.choices)" /> <span>{{choice.text}}</span>
+			      </td>
+			    </tr>
+			</table>
+			<p><hr></p>
+			<div class="row">
+				<div class="col-xs-6">
+					<a href="#/polls" class="btn btn-default" role="button"><span class="glyphicon glyphicon-arrow-left"></span> 回到投票列表</a>
+				</div>
+				<div class="col-xs-6">
+					<button class="btn btn-primary pull-right" type="submit">确认 &raquo;</button>
+				</div>
 			</div>
-			<div class="col-xs-6">
-				<button class="btn btn-primary pull-right" type="submit">Vote &raquo;</button>
-			</div>
-		</div>
-	</form>
-</div>
-	
-<div ng-show="poll.userVoted">
-	<table class="result-table">
-		<tr ng-repeat="choice in poll.choices">
-			<td>{{choice.text}}</td>
-			<td>
-				<table style="background-color: lightblue; width: {{choice.votes.length/poll.totalVotes*100}}%; text-align: right">
-					<tr><td>{{choice.votes.length}}</td></tr>
-				</table>
-			</td>
-		</tr>
-	</table>
-			
-	<p>
-		<em>
-			{{poll.totalVotes}} votes counted so far.
-			<span ng-show="poll.userChoice">You voted for <strong>{{poll.userChoice.text}}</strong>.</span>
-		</em>
-	</p>
-	
-	<p><hr></p>
-	
-	<p><a href="#/polls" class="btn btn-default" role="button"><span class="glyphicon glyphicon-arrow-left"></span> Back to Poll List</a></p>
-</div>
+		</form>
+	</div>
 
-<p>&nbsp;</p>
+	<p>&nbsp;</p>
+</div>

@@ -1,6 +1,8 @@
 // Connect to MongoDB using Mongoose
 var mongoose = require('mongoose');
 var db;
+var _ = require('lodash');
+
 if (process.env.VCAP_SERVICES) {
    var env = JSON.parse(process.env.VCAP_SERVICES);
    db = mongoose.createConnection(env['mongodb-2.2'][0].credentials.url);
@@ -32,6 +34,7 @@ exports.poll = function(req, res) {
 	
 	// Find the poll by its ID, use lean as we won't be changing it
 	Poll.findById(pollId, '', { lean: true }, function(err, poll) {
+
 		if(poll) {
 			var userVoted = false,
 					userChoice,
@@ -93,6 +96,18 @@ exports.vote = function(socket) {
 		
 		Poll.findById(data.poll_id, function(err, poll) {
 			var choice = poll.choices.id(data.choice);
+			
+			//Remove another choice.
+			for(var i=0; i<poll.choices.length; i++) {
+				if (poll.choices[i]._id !== choice._id) {
+					for(var j=0; j<poll.choices[i].votes.length; j++) {
+						if (poll.choices[i].votes[j].ip === ip) {
+							poll.choices[i].votes.splice(j, 1);
+						}
+					}
+				}
+			}
+
 			choice.votes.push({ ip: ip });
 			
 			poll.save(function(err, doc) {

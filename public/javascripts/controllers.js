@@ -5,7 +5,16 @@ function PollListCtrl($scope, Poll) {
 
 // Controller for an individual poll
 function PollItemCtrl($scope, $routeParams, socket, Poll) {	
-	$scope.poll = Poll.get({pollId: $routeParams.pollId});
+	Poll.get({pollId: $routeParams.pollId}, function(poll){
+		$scope.poll = poll;
+	});
+
+	$scope.updateSelection = function(position, entities) {
+      angular.forEach(entities, function(subscription, index) {
+        if (position != index) 
+          subscription.checked = false;
+      });
+    }
 	
 	socket.on('myvote', function(data) {
 		console.dir(data);
@@ -23,15 +32,44 @@ function PollItemCtrl($scope, $routeParams, socket, Poll) {
 	});
 	
 	$scope.vote = function() {
-		var pollId = $scope.poll._id,
-				choiceId = $scope.poll.userVote;
+		var choiceId = null;
+		angular.forEach($scope.poll.choices, function(choiceItem) {
+			if (choiceItem.checked === true) {
+				choiceId = choiceItem._id
+			};
+		});
+		var pollId = $scope.poll._id;
+		console.log('USER CHOICE ', $scope.poll.userChoice);
 		
 		if(choiceId) {
-			var voteObj = { poll_id: pollId, choice: choiceId };
-			socket.emit('send:vote', voteObj);
+			if (!$scope.poll.userChoice) {
+				var voteObj = { poll_id: pollId, choice: choiceId };
+				socket.emit('send:vote', voteObj);
+			} else if(choiceId !== $scope.poll.userChoice._id) {
+				var voteObj = { poll_id: pollId, choice: choiceId };
+				socket.emit('send:vote', voteObj);
+			} else {
+				alert('You already choosed this one. Please change!');
+			}	
 		} else {
 			alert('You must select an option to vote for');
 		}
+		$scope.initChoice();
+	};
+
+	$scope.initChoice = function() {
+		//$scope.poll = Poll.get({pollId: $routeParams.pollId});
+		Poll.get({pollId: $routeParams.pollId}, function(poll){
+			$scope.poll = poll;
+			console.log('AAAAAAAA Type ', $scope.poll);
+			for(var i=0; i<$scope.poll.choices.length; i++) {
+				if ($scope.poll.userChoice && $scope.poll.choices[i]._id === $scope.poll.userChoice._id) {
+					$scope.poll.choices[i].checked = true;
+				} else {
+					$scope.poll.choices[i].checked = false;
+				}
+			}
+		});
 	};
 }
 
