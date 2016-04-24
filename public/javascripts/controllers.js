@@ -20,6 +20,7 @@ function PollItemCtrl($scope, $routeParams, socket, Poll) {
 		console.dir(data);
 		if(data._id === $routeParams.pollId) {
 			$scope.poll = data;
+			$scope.initChoice();
 		}
 	});
 	
@@ -28,6 +29,7 @@ function PollItemCtrl($scope, $routeParams, socket, Poll) {
 		if(data._id === $routeParams.pollId) {
 			$scope.poll.choices = data.choices;
 			$scope.poll.totalVotes = data.totalVotes;
+			$scope.initChoice();
 		}		
 	});
 	
@@ -58,10 +60,19 @@ function PollItemCtrl($scope, $routeParams, socket, Poll) {
 	};
 
 	$scope.initChoice = function() {
-		//$scope.poll = Poll.get({pollId: $routeParams.pollId});
-		Poll.get({pollId: $routeParams.pollId}, function(poll){
-			$scope.poll = poll;
-			console.log('AAAAAAAA Type ', $scope.poll);
+		if (!$scope.poll) {
+			Poll.get({pollId: $routeParams.pollId}, function(poll){
+				$scope.poll = poll;
+				console.log('AAAAAAAA Type ', $scope.poll);
+				for(var i=0; i<$scope.poll.choices.length; i++) {
+					if ($scope.poll.userChoice && $scope.poll.choices[i]._id === $scope.poll.userChoice._id) {
+						$scope.poll.choices[i].checked = true;
+					} else {
+						$scope.poll.choices[i].checked = false;
+					}
+				}
+			});
+		} else {
 			for(var i=0; i<$scope.poll.choices.length; i++) {
 				if ($scope.poll.userChoice && $scope.poll.choices[i]._id === $scope.poll.userChoice._id) {
 					$scope.poll.choices[i].checked = true;
@@ -69,7 +80,9 @@ function PollItemCtrl($scope, $routeParams, socket, Poll) {
 					$scope.poll.choices[i].checked = false;
 				}
 			}
-		});
+		}
+		//$scope.poll = Poll.get({pollId: $routeParams.pollId});
+		
 	};
 }
 
