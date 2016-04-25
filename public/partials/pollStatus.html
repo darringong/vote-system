@@ -3,7 +3,7 @@
 		<tr ng-repeat="choice in poll.choices">
 			<td>{{choice.text}}</td>
 			<td>
-				<table style="background-color: lightblue; width: {{choice.votes.length/poll.totalVotes*100}}%; text-align: right">
+				<table style="background-color: {{colors[$index]}}; height: 60px; width: {{choice.votes.length/poll.totalVotes*100}}%; text-align: right">
 					<tr><td>{{choice.votes.length}}</td></tr>
 				</table>
 			</td>
@@ -11,9 +11,15 @@
 	</table>
 			
 	<p>
-		<em>
+		<h3 align="center">
 			目前投票总人数 {{poll.totalVotes}}。
 			<span ng-show="poll.userChoice">您选择了： <strong>{{poll.userChoice.text}}</strong>.</span>
-		</em>
+		</h3>
 	</p>
+
+	<div class="row">
+		<div class="col-xs-6">
+			<a href="#/polls" class="btn btn-default" role="button"><span class="glyphicon glyphicon-arrow-left"></span> 回到投票列表</a>
+		</div>
+	</div>
 </div>

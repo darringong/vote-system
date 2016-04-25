@@ -51,13 +51,15 @@ function PollItemCtrl($scope, $routeParams, socket, Poll) {
 				var voteObj = { poll_id: pollId, choice: choiceId };
 				socket.emit('send:vote', voteObj);
 			} else {
-				alert('You already choosed this one. Please change!');
+				alert('您已经选择此选项，请更换选项！');
 			}	
 		} else {
-			alert('You must select an option to vote for');
+			alert('请选择选项！');
 		}
 		$scope.initChoice();
 	};
+
+	$scope.colors = ['red', 'lightblue', 'BlanchedAlmond', 'CadetBlue', 'BurlyWood', 'DarkGrey', 'DarkOrange', 'DarkSeaGreen', 'Gray'];
 
 	$scope.initChoice = function() {
 		if (!$scope.poll) {
